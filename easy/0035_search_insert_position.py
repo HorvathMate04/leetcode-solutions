@@ -11,10 +11,12 @@ class Solution(object):
         :type target: int
         :rtype: int
         """
-        mid = len(nums) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[mid] < target:
-            return mid+1 if len(nums) == 1 else self.searchInsert(nums[mid:], target) + mid
-        if nums[mid] > target:
-            return mid if len(nums) == 1 else self.searchInsert(nums[:mid], target)
+        def helper(low, high): 
+            mid = (low + high) // 2
+            if nums[mid] == target:
+                return mid
+            if nums[mid] < target:
+                return mid+1 if low == high else helper(mid+1, high)
+            if nums[mid] > target:
+                return mid if low == high else helper(low, mid)
+        return helper(0, len(nums)-1)
