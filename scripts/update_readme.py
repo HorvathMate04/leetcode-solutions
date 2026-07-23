@@ -14,8 +14,6 @@ GitHub Actions workflow is).
 
 import os
 import re
-import subprocess
-from datetime import datetime, timezone
 
 # --- Konfiguracio ---------------------------------------------------------
 
@@ -30,14 +28,14 @@ DIFFICULTY_FOLDERS = {
 
 FILENAME_PATTERN = re.compile(r"^(\d+)_(.+)\.py$")
 
+# Csak a stats es progress szekciokat kezeli a script.
+# Ha kesobb ujra kell a "Latest solved" vagy a teljes problemalista,
+# eleg visszatenni a megfelelo marker-part a README.md-be, es egy
+# build_xxx_section fuggvenyt + MARKERS bejegyzest hozza adni.
 MARKERS = {
     "stats": ("<!-- START_STATS -->", "<!-- END_STATS -->"),
     "progress": ("<!-- START_PROGRESS -->", "<!-- END_PROGRESS -->"),
-    "latest": ("<!-- START_LATEST -->", "<!-- END_LATEST -->"),
-    "problem_list": ("<!-- START_PROBLEM_LIST -->", "<!-- END_PROBLEM_LIST -->"),
 }
-
-LATEST_COUNT = 10  # hany legutobbi megoldast listazzunk ki
 
 
 # --- Adatgyujtes -----------------------------------------------------------
@@ -70,25 +68,6 @@ def collect_solutions():
             )
     solutions.sort(key=lambda s: s["number"])
     return solutions
-
-
-def get_commit_date(filepath):
-    """Visszaadja a fajl utolso git commit datumat (ISO), vagy a fajl mtime-jat,
-    ha a git nem elerheto (pl. helyi tesztelesnel)."""
-    try:
-        result = subprocess.run(
-            ["git", "log", "-1", "--format=%cI", "--", filepath],
-            cwd=REPO_ROOT,
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        date_str = result.stdout.strip()
-        if date_str:
-            return datetime.fromisoformat(date_str)
-    except (subprocess.CalledProcessError, FileNotFoundError, ValueError):
-        pass
-    return datetime.fromtimestamp(os.path.getmtime(filepath), tz=timezone.utc)
 
 
 # --- Szekciok generalasa ----------------------------------------------------
@@ -127,50 +106,20 @@ def build_progress_section(solutions):
     return "\n".join(lines)
 
 
-def build_latest_section(solutions):
-    if not solutions:
-        return "_Meg nincs megoldott feladat._"
-
-    dated = [(get_commit_date(s["filepath"]), s) for s in solutions]
-    dated.sort(key=lambda x: x[0], reverse=True)
-
-    lines = [
-        "| Date | # | Problem | Difficulty |",
-        "|------|---|---------|------------|",
-    ]
-    for date, s in dated[:LATEST_COUNT]:
-        lines.append(
-            f"| {date.strftime('%Y-%m-%d')} | {s['number']} | "
-            f"[{s['name']}]({s['rel_path']}) | {s['difficulty_label']} |"
-        )
-    return "\n".join(lines)
-
-
-def build_problem_list_section(solutions):
-    if not solutions:
-        return "_Meg nincs megoldott feladat._"
-
-    lines = [
-        "| # | Problem | Difficulty |",
-        "|---|---------|------------|",
-    ]
-    for s in solutions:
-        lines.append(
-            f"| {s['number']} | [{s['name']}]({s['rel_path']}) | {s['difficulty_label']} |"
-        )
-    return "\n".join(lines)
-
-
 # --- README frissites --------------------------------------------------------
 
 def replace_between_markers(content, start_marker, end_marker, new_body):
+    """Lecsereli a ket marker kozotti tartalmat. Ha a marker-par nincs
+    jelen a README.md-ben (pl. a felhasznalo kivette azt a szekciot),
+    csendben kihagyja - nem all le hibaval."""
     pattern = re.compile(
         re.escape(start_marker) + r".*?" + re.escape(end_marker),
         flags=re.DOTALL,
     )
-    replacement = f"{start_marker}\n{new_body}\n{end_marker}"
     if not pattern.search(content):
-        raise ValueError(f"Marker paros nem talalhato a README.md-ben: {start_marker} / {end_marker}")
+        print(f"Info: marker paros nem talalhato, szekcio kihagyva: {start_marker} / {end_marker}")
+        return content
+    replacement = f"{start_marker}\n{new_body}\n{end_marker}"
     return pattern.sub(replacement, content)
 
 
@@ -183,8 +132,6 @@ def main():
     sections = {
         "stats": build_stats_section(solutions),
         "progress": build_progress_section(solutions),
-        "latest": build_latest_section(solutions),
-        "problem_list": build_problem_list_section(solutions),
     }
 
     for key, body in sections.items():
