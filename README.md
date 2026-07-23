@@ -30,14 +30,13 @@ Python solutions to LeetCode algorithm and data structure problems — an ongoin
 
 ## 📁 Structure
 
-leetcode-solutions/
-├── easy/ # Easy difficulty solutions
-├── medium/ # Medium difficulty solutions
-├── hard/ # Hard difficulty solutions
-└── scripts/ # README auto-update script
+leetcode-solutions/<br>
+├── easy/ # Easy difficulty solutions<br>
+├── medium/ # Medium difficulty solutions<br>
+├── hard/ # Hard difficulty solutions<br>
+└── scripts/ # README auto-update script<br>
 
 Every file follows the `NNNN_problem_name.py` naming format, with the original LeetCode problem description as a docstring at the top of the file, followed by the solution.
-
 ---
 
 <div align="center">
