@@ -10,10 +10,11 @@ The greatest common divisor of two numbers is
 the largest positive integer that evenly divides both numbers."""
 
 # Definition for singly-linked list.
-# class ListNode(object):
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
+class ListNode(object):
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+        
 class Solution(object):
     def insertGreatestCommonDivisors(self, head):
         """
