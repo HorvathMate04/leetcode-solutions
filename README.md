@@ -13,19 +13,19 @@ Python solutions to LeetCode algorithm and data structure problems — an ongoin
 | Difficulty | Solved |
 |------------|--------|
 | 🟢 Easy | 21 |
-| 🟡 Medium | 8 |
+| 🟡 Medium | 9 |
 | 🔴 Hard | 1 |
-| **Total** | **30** |
+| **Total** | **31** |
 <!-- END_STATS -->
 
 ## 🏆 Progress
 
 <!-- START_PROGRESS -->
-**Összesen megoldott problémák: 30**
+**Összesen megoldott problémák: 31**
 
-- 🟢 Easy: `██████████████░░░░░░` 70.0% (21)
-- 🟡 Medium: `█████░░░░░░░░░░░░░░░` 26.7% (8)
-- 🔴 Hard: `█░░░░░░░░░░░░░░░░░░░` 3.3% (1)
+- 🟢 Easy: `██████████████░░░░░░` 67.7% (21)
+- 🟡 Medium: `██████░░░░░░░░░░░░░░` 29.0% (9)
+- 🔴 Hard: `█░░░░░░░░░░░░░░░░░░░` 3.2% (1)
 <!-- END_PROGRESS -->
 
 ## 📁 Structure
