@@ -21,7 +21,7 @@ Python solutions to LeetCode algorithm and data structure problems — an ongoin
 ## 🏆 Progress
 
 <!-- START_PROGRESS -->
-**Összesen megoldott problémák: 33**
+**All solved problems: 32**
 
 - 🟢 Easy: `█████████████░░░░░░░` 66.7% (22)
 - 🟡 Medium: `██████░░░░░░░░░░░░░░` 30.3% (10)
